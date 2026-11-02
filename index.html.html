@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דשבורד לימודים - בגרות במתמטיקה 5 יח"ל</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Rubik', sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white; padding: 24px; border-radius: 16px; margin-bottom: 24px;
+      box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+    }
+    header h1 { font-size: 1.8rem; font-weight: 700; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+    
+    .stats-bar { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+    .stat-card {
+      background: var(--card-bg); padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border);
+      flex: 1; min-width: 200px; box-shadow: var(--shadow);
+    }
+    .stat-card .label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+    .stat-card .value { font-size: 1.6rem; font-weight: 700; color: var(--primary); margin: 4px 0; }
+    .progress-bar-container { background: #e2e8f0; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 8px; }
+    .progress-bar-fill { background: var(--success); height: 100%; width: 0%; transition: width 0.3s ease; }
+
+    .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+    .tab-btn {
+      padding: 10px 20px; border: none; background: none; font-size: 1rem; font-weight: 600;
+      color: var(--text-muted); cursor: pointer; border-radius: 8px; transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--primary); color: white; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* מערכת שעות */
+    .timetable-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: white; padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border); }
+    .week-selector { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .week-btn { padding: 6px 14px; border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer; font-weight: 500; }
+    .week-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    
+    .timetable-grid { display: grid; grid-template-columns: 100px repeat(7, 1fr); gap: 1px; background: var(--border); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+    .grid-cell { background: white; padding: 12px; min-height: 90px; font-size: 0.85rem; }
+    .grid-header { background: #f1f5f9; font-weight: 700; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .time-slot { background: #f8fafc; font-weight: 600; display: flex; align-items: center; justify-content: center; color: var(--text-muted); text-align: center; }
+    .task-card { background: #eff6ff; border-right: 4px solid var(--primary); padding: 8px; border-radius: 6px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+    .task-title { font-weight: 700; color: #1e40af; margin-bottom: 4px; }
+    .task-time { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* צ'ק-ליסט */
+    .topic-section { background: white; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; padding: 20px; box-shadow: var(--shadow); }
+    .topic-header { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+    .lesson-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f1f5f9; gap: 12px; flex-wrap: wrap; }
+    .lesson-item:last-child { border-bottom: none; }
+    .lesson-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 250px; }
+    .lesson-info input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+    .time-inputs { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); }
+    .time-inputs input { width: 70px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <h1>🎓 יעד: 100 בבגרות במתמטיקה (5 יח"ל)</h1>
+      <p>מועד בחינה: 11 בינואר 2027 | מעקב למידה דינמי וצ'ק-ליסט</p>
+    </div>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="label">התקדמות כללית</div>
+      <div class="value" id="overall-percent">0%</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="overall-progress-fill"></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="label">שעות שנלמדו נטו</div>
+      <div class="value" id="completed-hours">0 / 106.5</div>
+      <div class="label">שעות וידאו + 20% תרגול</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">קצב נדרש ליום (עד היעד ב-28.12)</div>
+      <div class="value" id="daily-pace">1.9 שעות</div>
+      <div class="label">מסיים שבועיים לפני הבחינה!</div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('checklist')">📋 צ'ק-ליסט למידה דינמי</button>
+    <button class="tab-btn" onclick="switchTab('timetable')">🏫 מערכת שעות בית-ספרית</button>
+  </div>
+
+  <!-- TAB 1: CHECKLIST -->
+  <div id="checklist" class="tab-content active">
+    <div id="checklist-container"></div>
+  </div>
+
+  <!-- TAB 2: TIMETABLE -->
+  <div id="timetable" class="tab-content">
+    <div class="timetable-controls">
+      <div style="font-weight: 700;" id="week-title">שבוע 1 (03.11 - 09.11): שאלון 571</div>
+      <div class="week-selector">
+        <button class="week-btn active" onclick="loadWeek(1, event)">שבוע 1</button>
+        <button class="week-btn" onclick="loadWeek(2, event)">שבוע 2</button>
+        <button class="week-btn" onclick="loadWeek(3, event)">שבוע 3</button>
+        <button class="week-btn" onclick="loadWeek(4, event)">שבוע 4</button>
+      </div>
+    </div>
+    <div class="timetable-grid" id="grid-container"></div>
+  </div>
+</div>
+
+<script>
+const data = [
+  {
+    exam: "שאלון 571",
+    topics: [
+      {
+        name: "נושא 4: חקירה ושטחים (פולינום, מנה ושורש)",
+        lessons: [
+          { id: "571_4_27", name: "שיעור 27: חקירת פולינום, מנה ושורש", theoreticalMin: 1269 },
+          { id: "571_4_29", name: "שיעור 29: חישוב שטחים ונפחים", theoreticalMin: 540 }
+        ]
+      },
+      {
+        name: "נושא 5: חקירה ושטחים (פונקציות טריגונומטריות)",
+        lessons: [
+          { id: "571_5_31", name: "שיעור 31: משוואות וזהויות טריגונומטריות", theoreticalMin: 300 },
+          { id: "571_5_33", name: "שיעור 33: חקירת פונקציות טריגונומטריות", theoreticalMin: 380 },
+          { id: "571_5_35", name: "שיעור 35: חישוב שטחים ונפחים טריגו", theoreticalMin: 240 }
+        ]
+      },
+      {
+        name: "נושא 7: נגזרות בעיות קיצון",
+        lessons: [
+          { id: "571_7_39", name: "שיעור 39: בעיות קיצון (571)", theoreticalMin: 108 }
+        ]
+      }
+    ]
+  },
+  {
+    exam: "שאלון 572",
+    topics: [
+      {
+        name: "נושא 4: חקירה ושטחים (מעריכיות ולוגריתמיות)",
+        lessons: [
+          { id: "572_4_17", name: "שיעור 17: משוואות אי-שוויונים מעריכיים", theoreticalMin: 271 },
+          { id: "572_4_19", name: "שיעור 19: משוואות אי-שוויונים לוגריתמיים", theoreticalMin: 585 },
+          { id: "572_4_21", name: "שיעור 21: חקירת מעריכית ולוגריתמית", theoreticalMin: 570 }
+        ]
+      },
+      {
+        name: "נושא 5: בעיות קיצון, גדילה ודעיכה",
+        lessons: [
+          { id: "572_5_24", name: "שיעור 24: בעיות קיצון מעריכית ולוגריתמית", theoreticalMin: 180 }
+        ]
+      },
+      {
+        name: "נושא 6: מספרים מרוכבים",
+        lessons: [
+          { id: "572_6_27", name: "שיעור 27: פעולות במרוכבים", theoreticalMin: 107 },
+          { id: "572_6_29", name: "שיעור 29: משוואות במרוכבים", theoreticalMin: 60 },
+          { id: "572_6_31", name: "שיעור 31: סדרות במרוכבים", theoreticalMin: 22 },
+          { id: "572_6_33", name: "שיעור 33: גיאומטריה אנליטית במרוכבים", theoreticalMin: 700 }
+        ]
+      }
+    ]
+  }
+];
+
+let state = JSON.parse(localStorage.getItem('math_dashboard_state')) || {};
+
+function saveState() {
+  localStorage.setItem('math_dashboard_state', JSON.stringify(state));
+  updateStats();
+}
+
+function renderChecklist() {
+  const container = document.getElementById('checklist-container');
+  container.innerHTML = '';
+
+  data.forEach(examGroup => {
+    examGroup.topics.forEach(topic => {
+      const topicEl = document.createElement('div');
+      topicEl.className = 'topic-section';
+      
+      let html = `<div class="topic-header">
+        <span>${examGroup.exam} - ${topic.name}</span>
+      </div>`;
+
+      topic.lessons.forEach(lesson => {
+        const practiceMin = Math.round(lesson.theoreticalMin * 0.2);
+        const totalMin = lesson.theoreticalMin + practiceMin;
+        const saved = state[lesson.id] || { done: false, learnedMin: 0 };
+
+        html += `
+          <div class="lesson-item">
+            <div class="lesson-info">
+              <input type="checkbox" id="check_${lesson.id}" ${saved.done ? 'checked' : ''} onchange="toggleDone('${lesson.id}', ${totalMin})">
+              <label for="check_${lesson.id}"><strong>${lesson.name}</strong></label>
+            </div>
+            <div class="time-inputs">
+              <span>תיאוריה + 20% תרגול: ${fmtTime(totalMin)} | </span>
+              <label>למדתי:</label>
+              <input type="number" value="${saved.learnedMin || 0}" min="0" max="${totalMin}" onchange="updateLearnedMin('${lesson.id}', this.value, ${totalMin})">
+              <span>דקות</span>
+            </div>
+          </div>
+        `;
+      });
+
+      topicEl.innerHTML = html;
+      container.appendChild(topicEl);
+    });
+  });
+}
+
+function fmtTime(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return h > 0 ? `${h} שעות ו-${m} דק'` : `${m} דק'`;
+}
+
+function toggleDone(id, totalMin) {
+  if (!state[id]) state[id] = {};
+  state[id].done = !state[id].done;
+  if (state[id].done) {
+    state[id].learnedMin = totalMin;
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+    }
+  }
+  saveState();
+  renderChecklist();
+}
+
+function updateLearnedMin(id, val, totalMin) {
+  if (!state[id]) state[id] = {};
+  state[id].learnedMin = parseInt(val) || 0;
+  if (state[id].learnedMin >= totalMin) {
+    state[id].done = true;
+  }
+  saveState();
+}
+
+function updateStats() {
+  let totalMinAll = 0;
+  let learnedMinAll = 0;
+
+  data.forEach(e => e.topics.forEach(t => t.lessons.forEach(l => {
+    const tot = l.theoreticalMin + Math.round(l.theoreticalMin * 0.2);
+    totalMinAll += tot;
+    const saved = state[l.id] || {};
+    learnedMinAll += saved.learnedMin || (saved.done ? tot : 0);
+  })));
+
+  const percent = Math.round((learnedMinAll / totalMinAll) * 100) || 0;
+  document.getElementById('overall-percent').innerText = `${percent}%`;
+  document.getElementById('overall-progress-fill').style.width = `${percent}%`;
+  document.getElementById('completed-hours').innerText = `${(learnedMinAll/60).toFixed(1)} / ${(totalMinAll/60).toFixed(1)}`;
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(tab).classList.add('active');
+}
+
+function loadWeek(w, ev) {
+  if (ev) {
+    document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+    ev.target.classList.add('active');
+  }
+  
+  const grid = document.getElementById('grid-container');
+  grid.innerHTML = '';
+  
+  const days = ['שעה', 'ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+  days.forEach(d => {
+    const cell = document.createElement('div');
+    cell.className = 'grid-cell grid-header';
+    cell.innerText = d;
+    grid.appendChild(cell);
+  });
+
+  const slots = ['בוקר\n09:00 - 13:30', 'אחה"צ\n15:00 - 19:00', 'ערב\n20:30 - 22:30'];
+  slots.forEach((s, slotIdx) => {
+    const timeCell = document.createElement('div');
+    timeCell.className = 'grid-cell time-slot';
+    timeCell.innerText = s;
+    grid.appendChild(timeCell);
+
+    for (let day = 1; day <= 7; day++) {
+      const cell = document.createElement('div');
+      cell.className = 'grid-cell';
+      if (w === 1 && day === 3 && slotIdx === 0) {
+        cell.innerHTML = `<div class="task-card"><div class="task-title">שיעור 27 (חלק 1)</div><div class="task-time">4.5 שעות צפייה נטו</div></div>`;
+      } else if (w === 1 && day === 3 && slotIdx === 1) {
+        cell.innerHTML = `<div class="task-card"><div class="task-title">שיעור 27 (חלק 2)</div><div class="task-time">4 שעות צפייה נטו</div></div>`;
+      } else if (w === 1 && day === 4 && slotIdx === 0) {
+        cell.innerHTML = `<div class="task-card"><div class="task-title">שיעור 27 (סיום)</div><div class="task-time">4.5 שעות צפייה נטו</div></div>`;
+      }
+      grid.appendChild(cell);
+    }
+  });
+}
+
+// אתחול
+renderChecklist();
+updateStats();
+loadWeek(1);
+</script>
+</body>
+</html>
