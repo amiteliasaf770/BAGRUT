@@ -120,8 +120,8 @@
   </div>
 
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('checklist')">📋 צ'ק-ליסט למידה דינמי</button>
-    <button class="tab-btn" onclick="switchTab('timetable')">🏫 מערכת שעות (8 שעות ביום)</button>
+    <button class="tab-btn active" onclick="switchTab('checklist', event)">📋 צ'ק-ליסט למידה דינמי</button>
+    <button class="tab-btn" onclick="switchTab('timetable', event)">🏫 מערכת שעות (8 שעות ביום)</button>
   </div>
 
   <!-- TAB 1: CHECKLIST -->
@@ -199,3 +199,39 @@ const data = [
         ]
       },
       {
+        name: "נושא 6: מספרים מרוכבים",
+        lessons: [
+          { id: "572_6_27", name: "שיעור 27: פעולות במרוכבים", theoreticalMin: 107 },
+          { id: "572_6_29", name: "שיעור 29: משוואות במרוכבים", theoreticalMin: 60 },
+          { id: "572_6_31", name: "שיעור 31: סדרות במרוכבים", theoreticalMin: 22 },
+          { id: "572_6_33", name: "שיעור 33: גיאומטריה אנליטית במרוכבים", theoreticalMin: 700 }
+        ]
+      }
+    ]
+  }
+];
+
+const startDate = new Date(2026, 10, 3); // 3 בנובמבר 2026
+
+const scheduleData = {
+  1: {
+    title: "שבוע 1: שאלון 571 - חקירת פולינום, מנה ושורש (8 שעות ביום)",
+    tasks: [
+      { day: 1, slot: 0, title: "שיעור 27 (חלק 1)", duration: "4 שעות" },
+      { day: 1, slot: 1, title: "שיעור 27 (חלק 2)", duration: "4 שעות" },
+      { day: 2, slot: 0, title: "שיעור 27 (חלק 3)", duration: "4 שעות" },
+      { day: 2, slot: 1, title: "שיעור 27 (תרגול)", duration: "4 שעות" },
+      { day: 3, slot: 0, title: "שיעור 29 (חלק 1)", duration: "4 שעות" },
+      { day: 3, slot: 1, title: "שיעור 29 (חלק 2)", duration: "4 שעות" },
+      { day: 4, slot: 0, title: "סיכום שבוע 1 ותרגול מורחב", duration: "8 שעות" }
+    ]
+  },
+  2: {
+    title: "שבוע 2: שאלון 571 - טריגונומטריה ושטחים (8 שעות ביום)",
+    tasks: [
+      { day: 1, slot: 0, title: "שיעור 31: משוואות טריגו", duration: "4 שעות" },
+      { day: 1, slot: 1, title: "שיעור 31: זהויות ותרגול", duration: "4 שעות" },
+      { day: 2, slot: 0, title: "שיעור 33: חקירת טריגו (א')", duration: "4 שעות" },
+      { day: 2, slot: 1, title: "שיעור 33: חקירת טריגו (ב')", duration: "4 שעות" },
+      { day: 3, slot: 0, title: "שיעור 35: שטחים ונפחים טריגו", duration: "4 שעות" },
+      { day: 3, slot: 1, title: "שיעור
