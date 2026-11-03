@@ -234,4 +234,250 @@ const scheduleData = {
       { day: 2, slot: 0, title: "שיעור 33: חקירת טריגו (א')", duration: "4 שעות" },
       { day: 2, slot: 1, title: "שיעור 33: חקירת טריגו (ב')", duration: "4 שעות" },
       { day: 3, slot: 0, title: "שיעור 35: שטחים ונפחים טריגו", duration: "4 שעות" },
-      { day: 3, slot: 1, title: "שיעור
+      { day: 3, slot: 1, title: "שיעור 39: בעיות קיצון 571", duration: "4 שעות" }
+    ]
+  },
+  3: {
+    title: "שבוע 3: שאלון 572 - מעריכיות ולוגריתמיות (8 שעות ביום)",
+    tasks: [
+      { day: 1, slot: 0, title: "שיעור 17: אי-שוויונים מעריכיים", duration: "4 שעות" },
+      { day: 1, slot: 1, title: "שיעור 17: תרגול מתקדם", duration: "4 שעות" },
+      { day: 2, slot: 0, title: "שיעור 19: לוגריתמיים (א')", duration: "4 שעות" },
+      { day: 2, slot: 1, title: "שיעור 19: לוגריתמיים (ב')", duration: "4 שעות" },
+      { day: 3, slot: 0, title: "שיעור 21: חקירה מעריכית/לוג (א')", duration: "4 שעות" },
+      { day: 3, slot: 1, title: "שיעור 21: חקירה מעריכית/לוג (ב')", duration: "4 שעות" }
+    ]
+  },
+  4: {
+    title: "שבוע 4: שאלון 572 - קיצון, גדילה ודעיכה ומרוכבים (8 שעות ביום)",
+    tasks: [
+      { day: 1, slot: 0, title: "שיעור 24: קיצון מעריכית ולוגריתמית", duration: "4 שעות" },
+      { day: 1, slot: 1, title: "שיעור 27: פעולות במרוכבים", duration: "4 שעות" },
+      { day: 2, slot: 0, title: "שיעור 29 + 31: משוואות וסדרות מרוכבים", duration: "4 שעות" },
+      { day: 2, slot: 1, title: "שיעור 33: אנליטית במרוכבים (א')", duration: "4 שעות" }
+    ]
+  },
+  5: {
+    title: "שבוע 5: שאלון 572 - סיום אנליטית מרוכבים וסימולציות (8 שעות ביום)",
+    tasks: [
+      { day: 1, slot: 0, title: "שיעור 33: אנליטית במרוכבים (ב')", duration: "4 שעות" },
+      { day: 1, slot: 1, title: "שיעור 33: תרגול מקיף ומסכם", duration: "4 שעות" },
+      { day: 2, slot: 0, title: "סימולציה מלאה והפקת לקחים", duration: "8 שעות" }
+    ]
+  }
+};
+
+let state = JSON.parse(localStorage.getItem('math_dashboard_state')) || {};
+
+function saveState() {
+  localStorage.setItem('math_dashboard_state', JSON.stringify(state));
+  updateStats();
+}
+
+function renderChecklist() {
+  const container = document.getElementById('checklist-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  data.forEach(examGroup => {
+    examGroup.topics.forEach(topic => {
+      const topicEl = document.createElement('div');
+      topicEl.className = 'topic-section';
+      
+      let html = `<div class="topic-header">
+        <span>${examGroup.exam} - ${topic.name}</span>
+      </div>`;
+
+      topic.lessons.forEach(lesson => {
+        const practiceMin = Math.round(lesson.theoreticalMin * 0.2);
+        const totalMin = lesson.theoreticalMin + practiceMin;
+        const saved = state[lesson.id] || { done: false, learnedMin: 0 };
+
+        html += `
+          <div class="lesson-item">
+            <div class="lesson-info">
+              <input type="checkbox" id="check_${lesson.id}" ${saved.done ? 'checked' : ''} onchange="toggleDone('${lesson.id}', ${totalMin})">
+              <label for="check_${lesson.id}"><strong>${lesson.name}</strong></label>
+            </div>
+            <div class="time-inputs">
+              <span>תיאוריה + 20% תרגול: ${fmtTime(totalMin)} | </span>
+              <label>למדתי:</label>
+              <input type="number" value="${saved.learnedMin || 0}" min="0" max="${totalMin}" onchange="updateLearnedMin('${lesson.id}', this.value, ${totalMin})">
+              <span>דקות</span>
+            </div>
+          </div>
+        `;
+      });
+
+      topicEl.innerHTML = html;
+      container.appendChild(topicEl);
+    });
+  });
+}
+
+function fmtTime(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return h > 0 ? `${h} שעות ו-${m} דק'` : `${m} דק'`;
+}
+
+function toggleDone(id, totalMin) {
+  if (!state[id]) state[id] = {};
+  state[id].done = !state[id].done;
+  if (state[id].done) {
+    state[id].learnedMin = totalMin;
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+    }
+  }
+  saveState();
+  renderChecklist();
+}
+
+function updateLearnedMin(id, val, totalMin) {
+  if (!state[id]) state[id] = {};
+  state[id].learnedMin = parseInt(val) || 0;
+  if (state[id].learnedMin >= totalMin) {
+    state[id].done = true;
+  }
+  saveState();
+}
+
+function updateStats() {
+  let totalMinAll = 0;
+  let learnedMinAll = 0;
+
+  data.forEach(e => e.topics.forEach(t => t.lessons.forEach(l => {
+    const tot = l.theoreticalMin + Math.round(l.theoreticalMin * 0.2);
+    totalMinAll += tot;
+    const saved = state[l.id] || {};
+    learnedMinAll += saved.learnedMin || (saved.done ? tot : 0);
+  })));
+
+  const percent = Math.round((learnedMinAll / totalMinAll) * 100) || 0;
+  document.getElementById('overall-percent').innerText = `${percent}%`;
+  document.getElementById('overall-progress-fill').style.width = `${percent}%`;
+  document.getElementById('completed-hours').innerText = `${(learnedMinAll/60).toFixed(1)} / ${(totalMinAll/60).toFixed(1)}`;
+}
+
+function switchTab(tab, ev) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  if (ev && ev.target) {
+    ev.target.classList.add('active');
+  }
+  const targetTab = document.getElementById(tab);
+  if (targetTab) {
+    targetTab.classList.add('active');
+  }
+}
+
+function renderWeekButtons() {
+  const container = document.getElementById('week-buttons');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.createElement('button');
+    btn.className = `week-btn ${i === 1 ? 'active' : ''}`;
+    btn.innerText = `שבוע ${i}`;
+    btn.onclick = (e) => loadWeek(i, e);
+    container.appendChild(btn);
+  }
+}
+
+const slotTimes = [
+  { start: "09:00", end: "13:00" },
+  { start: "14:00", end: "18:00" },
+  { start: "19:00", end: "21:00" }
+];
+
+function loadWeek(w, ev) {
+  if (ev && ev.target) {
+    document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+    ev.target.classList.add('active');
+  }
+
+  const weekInfo = scheduleData[w] || { title: `שבוע ${w}`, tasks: [] };
+  const weekTitleEl = document.getElementById('week-title');
+  if (weekTitleEl) weekTitleEl.innerText = weekInfo.title;
+
+  const grid = document.getElementById('grid-container');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const days = ['שעה', 'ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+  days.forEach(d => {
+    const cell = document.createElement('div');
+    cell.className = 'grid-cell grid-header';
+    cell.innerText = d;
+    grid.appendChild(cell);
+  });
+
+  const slots = ['בוקר\n09:00 - 13:00', 'אחה"צ\n14:00 - 18:00', 'ערב\n19:00 - 21:00'];
+  slots.forEach((s, slotIdx) => {
+    const timeCell = document.createElement('div');
+    timeCell.className = 'grid-cell time-slot';
+    timeCell.innerText = s;
+    grid.appendChild(timeCell);
+
+    for (let day = 1; day <= 7; day++) {
+      const cell = document.createElement('div');
+      cell.className = 'grid-cell';
+      
+      const task = weekInfo.tasks.find(t => t.day === day && t.slot === slotIdx);
+      if (task) {
+        const taskDate = new Date(startDate);
+        taskDate.setDate(startDate.getDate() + (w - 1) * 7 + (day - 1));
+        const dateStr = taskDate.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        cell.innerHTML = `
+          <div class="task-card" onclick="openCalModal('${task.title}', '${task.duration}', '${dateStr}', ${slotIdx})">
+            <div>
+              <div class="task-title">${task.title}</div>
+              <div class="task-time">${task.duration}</div>
+            </div>
+            <div class="cal-icon">📅 הוסף ליומן</div>
+          </div>
+        `;
+      }
+      grid.appendChild(cell);
+    }
+  });
+}
+
+function openCalModal(title, duration, dateStr, slotIdx) {
+  document.getElementById('modal-task-title').innerText = title;
+  document.getElementById('modal-task-time').innerText = `משך: ${duration} (${slotTimes[slotIdx].start} - ${slotTimes[slotIdx].end})`;
+  document.getElementById('modal-task-date').innerText = `תאריך: ${dateStr}`;
+
+  const parts = dateStr.split('.');
+  const year = parts[2];
+  const month = parts[1];
+  const day = parts[0];
+
+  const startTime = slotTimes[slotIdx].start.replace(':', '') + '00';
+  const endTime = slotTimes[slotIdx].end.replace(':', '') + '00';
+
+  const startIso = `${year}${month}${day}T${startTime}`;
+  const endIso = `${year}${month}${day}T${endTime}`;
+
+  const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('מתמטיקה (8 שעות): ' + title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent('יעד 8 שעות למידה נטו - ' + title + ' (' + duration + ')')}`;
+
+  document.getElementById('modal-gcal-link').href = gcalUrl;
+  document.getElementById('cal-modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('cal-modal').classList.remove('active');
+}
+
+// אתחול מערך הדשבורד בטעינת העמוד
+window.addEventListener('DOMContentLoaded', () => {
+  renderChecklist();
+  updateStats();
+  renderWeekButtons();
+  loadWeek(1);
+});
+</script>
+</body>
+</html>
