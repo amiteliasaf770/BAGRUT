@@ -95,7 +95,7 @@
   <header>
     <div>
       <h1>🎓 יעד: 100 בבגרות במתמטיקה (5 יח"ל)</h1>
-      <p>מועד בחינה: 11 בינואר 2027 | קצב יעד: 8 שעות נטו ביום</p>
+      <p>מועד בחינה: 11 בינואר 2027 | לוח זמנים מותאם אישית</p>
     </div>
   </header>
 
@@ -113,15 +113,15 @@
       <div class="label">שעות וידאו + 20% תרגול</div>
     </div>
     <div class="stat-card">
-      <div class="label">יעד קצב יומי</div>
-      <div class="value" id="daily-pace">8.0 שעות</div>
-      <div class="label">עמידה ביעד תסיים מוקדם במיוחד!</div>
+      <div class="label">מבנה שבועי</div>
+      <div class="value" id="daily-pace">מותאם אישית</div>
+      <div class="label">גמיש לפי לבנות זמן</div>
     </div>
   </div>
 
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('checklist', event)">📋 צ'ק-ליסט למידה דינמי</button>
-    <button class="tab-btn" onclick="switchTab('timetable', event)">🏫 מערכת שעות (8 שעות ביום)</button>
+    <button class="tab-btn" onclick="switchTab('timetable', event)">🏫 מערכת שעות מותאמת</button>
   </div>
 
   <!-- TAB 1: CHECKLIST -->
@@ -132,7 +132,7 @@
   <!-- TAB 2: TIMETABLE -->
   <div id="timetable" class="tab-content">
     <div class="timetable-controls">
-      <div style="font-weight: 700;" id="week-title">שבוע 1 (03.11 - 09.11): ממוקד 8 שעות ביום</div>
+      <div style="font-weight: 700;" id="week-title">שבוע 1 (השבוע: עד רביעי בצהריים)</div>
       <div class="week-selector" id="week-buttons"></div>
     </div>
     <div class="timetable-grid" id="grid-container"></div>
@@ -215,54 +215,54 @@ const startDate = new Date(2026, 10, 3); // 3 בנובמבר 2026
 
 const scheduleData = {
   1: {
-    title: "שבוע 1: שאלון 571 - חקירת פולינום, מנה ושורש (8 שעות ביום)",
+    title: "שבוע 1 (השבוע): למידה עד רביעי בצהריים",
     tasks: [
-      { day: 1, slot: 0, title: "שיעור 27 (חלק 1)", duration: "4 שעות" },
-      { day: 1, slot: 1, title: "שיעור 27 (חלק 2)", duration: "4 שעות" },
-      { day: 2, slot: 0, title: "שיעור 27 (חלק 3)", duration: "4 שעות" },
-      { day: 2, slot: 1, title: "שיעור 27 (תרגול)", duration: "4 שעות" },
-      { day: 3, slot: 0, title: "שיעור 29 (חלק 1)", duration: "4 שעות" },
-      { day: 3, slot: 1, title: "שיעור 29 (חלק 2)", duration: "4 שעות" },
-      { day: 4, slot: 0, title: "סיכום שבוע 1 ותרגול מורחב", duration: "8 שעות" }
+      { day: 1, slot: 0, title: "שיעור 27 (חלק 1 - בוקר)", duration: "4 שעות" },
+      { day: 1, slot: 1, title: "שיעור 27 (חלק 2 - אחה\"צ)", duration: "4 שעות" },
+      { day: 2, slot: 0, title: "שיעור 27 (חלק 3 - בוקר)", duration: "4 שעות" },
+      { day: 2, slot: 1, title: "שיעור 27 (תרגול - אחה\"צ)", duration: "4 שעות" },
+      { day: 3, slot: 0, title: "שיעור 29 (חלק ראשון - בוקר)", duration: "4 שעות" }
     ]
   },
   2: {
-    title: "שבוע 2: שאלון 571 - טריגונומטריה ושטחים (8 שעות ביום)",
+    title: "שבוע 2 (החל מ-10.1): למידה מלאה עד חמישי צהריים, שישי-שבת צהריים",
     tasks: [
-      { day: 1, slot: 0, title: "שיעור 31: משוואות טריגו", duration: "4 שעות" },
-      { day: 1, slot: 1, title: "שיעור 31: זהויות ותרגול", duration: "4 שעות" },
-      { day: 2, slot: 0, title: "שיעור 33: חקירת טריגו (א')", duration: "4 שעות" },
-      { day: 2, slot: 1, title: "שיעור 33: חקירת טריגו (ב')", duration: "4 שעות" },
-      { day: 3, slot: 0, title: "שיעור 35: שטחים ונפחים טריגו", duration: "4 שעות" },
-      { day: 3, slot: 1, title: "שיעור 39: בעיות קיצון 571", duration: "4 שעות" }
+      { day: 2, slot: 0, title: "שיעור 29 (המשך - בוקר)", duration: "4 שעות" },
+      { day: 2, slot: 1, title: "שיעור 29 (תרגול - אחה\"צ)", duration: "4 שעות" },
+      { day: 2, slot: 2, title: "שיעור 31 (ערב)", duration: "2 שעות" },
+      { day: 3, slot: 0, title: "שיעור 31 (משוואות טריגו - בוקר)", duration: "4 שעות" },
+      { day: 3, slot: 1, title: "שיעור 31 (זהויות - אחה\"צ)", duration: "4 שעות" },
+      { day: 3, slot: 2, title: "שיעור 33 (ערב)", duration: "2 שעות" },
+      { day: 4, slot: 0, title: "שיעור 33 (חקירת טריגו - בוקר)", duration: "4 שעות" },
+      { day: 4, slot: 1, title: "שיעור 33 (המשך וסיכום - צהריים)", duration: "3 שעות" },
+      { day: 5, slot: 1, title: "שיעור 35 (לבנת צהריים בשישי)", duration: "3 שעות" },
+      { day: 6, slot: 1, title: "שיעור 39 (לבנת צהריים בשבת)", duration: "3 שעות" }
     ]
   },
   3: {
-    title: "שבוע 3: שאלון 572 - מעריכיות ולוגריתמיות (8 שעות ביום)",
+    title: "שבוע 3: שאלון 572 - מעריכיות ולוגריתמיות",
     tasks: [
-      { day: 1, slot: 0, title: "שיעור 17: אי-שוויונים מעריכיים", duration: "4 שעות" },
-      { day: 1, slot: 1, title: "שיעור 17: תרגול מתקדם", duration: "4 שעות" },
-      { day: 2, slot: 0, title: "שיעור 19: לוגריתמיים (א')", duration: "4 שעות" },
-      { day: 2, slot: 1, title: "שיעור 19: לוגריתמיים (ב')", duration: "4 שעות" },
-      { day: 3, slot: 0, title: "שיעור 21: חקירה מעריכית/לוג (א')", duration: "4 שעות" },
-      { day: 3, slot: 1, title: "שיעור 21: חקירה מעריכית/לוג (ב')", duration: "4 שעות" }
+      { day: 2, slot: 0, title: "שיעור 17 (אי-שוויונים מעריכיים - בוקר)", duration: "4 שעות" },
+      { day: 2, slot: 1, title: "שיעור 17 (תרגול - אחה\"צ)", duration: "4 שעות" },
+      { day: 3, slot: 0, title: "שיעור 19 (לוגריתמיים א' - בוקר)", duration: "4 שעות" },
+      { day: 3, slot: 1, title: "שיעור 19 (לוגריתמיים ב' - אחה\"צ)", duration: "4 שעות" },
+      { day: 4, slot: 0, title: "שיעור 21 (חקירה מעריכית/לוג - בוקר)", duration: "4 שעות" },
+      { day: 4, slot: 1, title: "שיעור 21 (המשך חקירה - צהריים)", duration: "3 שעות" },
+      { day: 5, slot: 1, title: "שיעור 24 (לבנת צהריים בשישי)", duration: "3 שעות" },
+      { day: 6, slot: 1, title: "שיעור 27 (לבנת צהריים בשבת)", duration: "3 שעות" }
     ]
   },
   4: {
-    title: "שבוע 4: שאלון 572 - קיצון, גדילה ודעיכה ומרוכבים (8 שעות ביום)",
+    title: "שבוע 4: שאלון 572 - מרוכבים וסימולציות",
     tasks: [
-      { day: 1, slot: 0, title: "שיעור 24: קיצון מעריכית ולוגריתמית", duration: "4 שעות" },
-      { day: 1, slot: 1, title: "שיעור 27: פעולות במרוכבים", duration: "4 שעות" },
-      { day: 2, slot: 0, title: "שיעור 29 + 31: משוואות וסדרות מרוכבים", duration: "4 שעות" },
-      { day: 2, slot: 1, title: "שיעור 33: אנליטית במרוכבים (א')", duration: "4 שעות" }
-    ]
-  },
-  5: {
-    title: "שבוע 5: שאלון 572 - סיום אנליטית מרוכבים וסימולציות (8 שעות ביום)",
-    tasks: [
-      { day: 1, slot: 0, title: "שיעור 33: אנליטית במרוכבים (ב')", duration: "4 שעות" },
-      { day: 1, slot: 1, title: "שיעור 33: תרגול מקיף ומסכם", duration: "4 שעות" },
-      { day: 2, slot: 0, title: "סימולציה מלאה והפקת לקחים", duration: "8 שעות" }
+      { day: 2, slot: 0, title: "שיעור 29 + 31 (מרוכבים - בוקר)", duration: "4 שעות" },
+      { day: 2, slot: 1, title: "שיעור 33 (אנליטית מרוכבים א' - אחה\"צ)", duration: "4 שעות" },
+      { day: 3, slot: 0, title: "שיעור 33 (אנליטית מרוכבים ב' - בוקר)", duration: "4 שעות" },
+      { day: 3, slot: 1, title: "שיעור 33 (תרגול מתקדם - אחה\"צ)", duration: "4 שעות" },
+      { day: 4, slot: 0, title: "סימולציה מסכמת 1 (בוקר)", duration: "4 שעות" },
+      { day: 4, slot: 1, title: "תחקור סימולציה 1 (צהריים)", duration: "3 שעות" },
+      { day: 5, slot: 1, title: "סימולציה 2 (לבנת צהריים בשישי)", duration: "3 שעות" },
+      { day: 6, slot: 1, title: "חזרה ממוקדת וסגירת פינות (שבת)", duration: "3 שעות" }
     ]
   }
 };
@@ -376,7 +376,7 @@ function renderWeekButtons() {
   const container = document.getElementById('week-buttons');
   if (!container) return;
   container.innerHTML = '';
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 4; i++) {
     const btn = document.createElement('button');
     btn.className = `week-btn ${i === 1 ? 'active' : ''}`;
     btn.innerText = `שבוע ${i}`;
@@ -427,7 +427,11 @@ function loadWeek(w, ev) {
       const task = weekInfo.tasks.find(t => t.day === day && t.slot === slotIdx);
       if (task) {
         const taskDate = new Date(startDate);
-        taskDate.setDate(startDate.getDate() + (w - 1) * 7 + (day - 1));
+        // התאמת חישוב תאריכים לפי השבועות
+        let dayOffset = (w - 1) * 7 + (day - 1);
+        if (w > 1) dayOffset += 2; // התאמה להזזה לשבוע הבא החל משלישי
+        taskDate.setDate(startDate.getDate() + dayOffset);
+        
         const dateStr = taskDate.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
         cell.innerHTML = `
@@ -461,7 +465,7 @@ function openCalModal(title, duration, dateStr, slotIdx) {
   const startIso = `${year}${month}${day}T${startTime}`;
   const endIso = `${year}${month}${day}T${endTime}`;
 
-  const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('מתמטיקה (8 שעות): ' + title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent('יעד 8 שעות למידה נטו - ' + title + ' (' + duration + ')')}`;
+  const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('מתמטיקה: ' + title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent('למידה לבגרות 5 יח"ל - ' + title + ' (' + duration + ')')}`;
 
   document.getElementById('modal-gcal-link').href = gcalUrl;
   document.getElementById('cal-modal').classList.add('active');
@@ -471,7 +475,6 @@ function closeModal() {
   document.getElementById('cal-modal').classList.remove('active');
 }
 
-// אתחול מערך הדשבורד בטעינת העמוד
 window.addEventListener('DOMContentLoaded', () => {
   renderChecklist();
   updateStats();
